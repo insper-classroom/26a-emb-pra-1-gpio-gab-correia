@@ -16,27 +16,23 @@
 #define C 4
 #define D 5
 
-// Sequência half-step para o 28BYJ-48
-const int passos[8][4] = {
-    {1,0,0,0},
-    {1,1,0,0},
-    {0,1,0,0},
-    {0,1,1,0},
-    {0,0,1,0},
-    {0,0,1,1},
-    {0,0,0,1},
-    {1,0,0,1},
+// Sequência full-step (como no guia HowToMechatronics)
+const int passos[4][4] = {
+    {1, 1, 0, 0},
+    {0, 1, 1, 0},
+    {0, 0, 1, 1},
+    {1, 0, 0, 1},
 };
 
 void girar_360() {
-    for (int i = 0; i < 4096; i++) {
-        gpio_put(A, passos[i % 8][0]);
-        gpio_put(B, passos[i % 8][1]);
-        gpio_put(C, passos[i % 8][2]);
-        gpio_put(D, passos[i % 8][3]);
+    for (int i = 0; i < 2048; i++) {  // 2048 passos = 360°
+        gpio_put(A, passos[i % 4][0]);
+        gpio_put(B, passos[i % 4][1]);
+        gpio_put(C, passos[i % 4][2]);
+        gpio_put(D, passos[i % 4][3]);
         sleep_ms(2);
     }
-
+    // Desliga bobinas
     gpio_put(A, 0); gpio_put(B, 0);
     gpio_put(C, 0); gpio_put(D, 0);
 }
@@ -61,9 +57,9 @@ int main() {
             while (!gpio_get(BOTAO_PIN)); 
 
             printf("Girando!\n");
-            gpio_put(LED_PIN, 1); 
-            girar_360();            
-            gpio_put(LED_PIN, 0); 
+            gpio_put(LED_PIN, 1);   
+            girar_360();             
+            gpio_put(LED_PIN, 0);   
         }
     }
 }
